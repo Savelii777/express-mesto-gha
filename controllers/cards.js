@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVERE_ERROR } = require('../errors/errors_constants');
+const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../errors/errors_constants');
 
 module.exports.getCards = async (req, res, next) => {
   try {
@@ -10,9 +10,9 @@ module.exports.getCards = async (req, res, next) => {
     return res.send(cards);
   } catch (err) {
     if (err.name === 'InternalServerError') {
-      next(res.status(INTERNAL_SERVERE_ERROR).send({ message: 'Ошибка по умолчанию' }));
+      return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
     } else {
-      next(err);
+      return next(err);
     }
   }
 };
@@ -31,15 +31,15 @@ module.exports.createCard = async (req, res, next) => {
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(
+      return next(
         res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные при создании карточки',
         }),
       );
     } else if (err.name === 'InternalServerError') {
-      next(res.status(INTERNAL_SERVERE_ERROR).send({ message: 'Ошибка по умолчанию' }));
+      return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
     } else {
-      next(err);
+      return next(err);
     }
   }
 };
@@ -54,9 +54,9 @@ module.exports.deleteCards = async (req, res, next) => {
     return res.send({ data: card });
   } catch (err) {
     if (err.name === 'CastError') {
-      next(res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }));
+      return next(res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }));
     } else {
-      next(err);
+      return next(err);
     }
   }
 };
@@ -87,7 +87,7 @@ module.exports.deleteLikes = async (req, res, next) => {
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
-      { new: true }
+      { new: true },
     );
 
     if (!card) {
@@ -100,7 +100,7 @@ module.exports.deleteLikes = async (req, res, next) => {
         return next(
           res.status(BAD_REQUEST).send({
             message: 'Переданы некорректные данные для постановки лайка.',
-          })
+          }),
         );
       case 'InternalServerError':
         return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));

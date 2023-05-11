@@ -11,10 +11,16 @@ const app = express();
 
 mongoose.set('strictQuery', true);
 mongoose.connect('mongodb://0.0.0.0:27017/mestodb')
-  .then(() => console.log('Database connected.'))
+  .then(() => {
+    if (process.env.NODE_ENV !== 'test') {
+      console.log('Database connected.');
+    }
+  })
   .catch((err) => {
     console.log('Error on database connection');
-    console.error(err);
+    if (err) {
+      console.error(err);
+    }
   });
 
 app.use(bodyParser.json());

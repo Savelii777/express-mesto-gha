@@ -2,7 +2,7 @@ const User = require('../models/user');
 const {
   BAD_REQUEST,
   NOT_FOUND,
-  INTERNAL_SERVERE_ERROR,
+  INTERNAL_SERVER_ERROR,
 } = require('../errors/errors_constants');
 
 module.exports.getUsers = async (req, res, next) => {
@@ -11,11 +11,11 @@ module.exports.getUsers = async (req, res, next) => {
     res.send({ data: users });
   } catch (err) {
     if (err.name === 'InternalServerError') {
-      next(
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' })
+      return next(
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }),
       );
     } else {
-      next(err);
+      return  next(err);
     }
   }
 };
@@ -32,18 +32,17 @@ module.exports.postUsers = async (req, res, next) => {
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя',
-      }),
-    );
-  } else if (err.name === 'InternalServerError') {
-    next(
-      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' })
-    );
-  } else {
-    next(err);
+      return next(
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' })
+      );
+    } else if (err.name === 'InternalServerError') {
+      return next(
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' })
+      );
+    } else {
+      return next(err);
+    }
   }
-}
 };
 
 module.exports.findUsersById = async (req, res, next) => {
@@ -57,11 +56,11 @@ module.exports.findUsersById = async (req, res, next) => {
     return res.send({ data: user });
   } catch (err) {
     if (err.name === 'CastError') {
-      next(
+      return next(
         res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }),
       );
     } else {
-      next(err);
+      return next(err);
     }
   }
 };
@@ -82,17 +81,17 @@ module.exports.updateUser = async (req, res, next) => {
     return res.send({ data: user });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(
+      return next(
         res.status(BAD_REQUEST).send({
           message: 'Переданы некорректные данные при создании пользователя',
         })
       );
     } else if (err.name === 'InternalServerError') {
-      next(
+      return next(
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' })
       );
     } else {
-      next(err);
+      return next(err);
     }
   }
 };
@@ -121,7 +120,7 @@ module.exports.patchUsersAvatar = async (req, res, next) => {
     }
     return next(
       res
-        .status(INTERNAL_SERVERE_ERROR)
+        .status(INTERNAL_SERVER_ERROR)
         .send({ message: 'Ошибка по умолчанию' }),
     );
   }
