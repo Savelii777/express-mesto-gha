@@ -5,7 +5,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: [2, 'Минимум 2 символа.'],
-    maxlength: [30, 'Максимум 30 символов.'],
+    maxlength: [30, 'Максимум может быть 30 символов.'],
   },
   link: {
     type: String,
