@@ -11,9 +11,8 @@ module.exports.getCards = async (req, res, next) => {
   } catch (err) {
     if (err.name === 'InternalServerError') {
       return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
-    } else {
-      return next(err);
     }
+    return next(err);
   }
 };
 
@@ -36,11 +35,11 @@ module.exports.createCard = async (req, res, next) => {
           message: 'Переданы некорректные данные при создании карточки',
         }),
       );
-    } else if (err.name === 'InternalServerError') {
-      return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
-    } else {
-      return next(err);
     }
+    if (err.name === 'InternalServerError') {
+      return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
+    }
+    return next(err);
   }
 };
 
@@ -55,9 +54,8 @@ module.exports.deleteCards = async (req, res, next) => {
   } catch (err) {
     if (err.name === 'CastError') {
       return next(res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }));
-    } else {
-      return next(err);
     }
+    return next(err);
   }
 };
 
@@ -100,7 +98,7 @@ module.exports.deleteLikes = async (req, res, next) => {
         return next(
           res.status(BAD_REQUEST).send({
             message: 'Переданы некорректные данные для постановки лайка.',
-          }),
+          })
         );
       case 'InternalServerError':
         return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
