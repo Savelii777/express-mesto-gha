@@ -17,7 +17,7 @@ module.exports.getCards = async (req, res, next) => {
       return next(
         res
           .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Ошибка по умолчанию" })
+          .send({ message: "На сервере произошла ошибка" })
       );
     }
     return next(err);
@@ -48,7 +48,7 @@ module.exports.createCard = async (req, res, next) => {
       return next(
         res
           .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Ошибка по умолчанию" })
+          .send({ message: "На сервере произошла ошибка" })
       );
     }
     return next(err);
@@ -97,7 +97,7 @@ module.exports.putLikes = async (req, res, next) => {
       );
     }
     return next(
-      res.status(INTERNAL_SERVER_ERROR).send({ message: "Ошибка по умолчанию" })
+      res.status(INTERNAL_SERVER_ERROR).send({ message: "На сервере произошла ошибка" })
     );
   }
 };
@@ -128,7 +128,7 @@ module.exports.deleteLikes = async (req, res, next) => {
         return next(
           res
             .status(INTERNAL_SERVER_ERROR)
-            .send({ message: "Ошибка по умолчанию" })
+            .send({ message: "На сервере произошла ошибка" })
         );
       default:
         return next(err);

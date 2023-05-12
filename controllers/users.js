@@ -14,7 +14,7 @@ module.exports.getUsers = async (req, res, next) => {
       return next(
         res
           .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Ошибка по умолчанию" })
+          .send({ message: "На сервере произошла ошибка" })
       );
     } else {
       return next(err);
@@ -47,7 +47,7 @@ module.exports.postUsers = async (req, res, next) => {
       return next(
         res
           .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Ошибка по умолчанию" })
+          .send({ message: "На сервере произошла ошибка" })
       );
     } else {
       return next(err);
@@ -101,7 +101,7 @@ module.exports.updateUser = async (req, res, next) => {
       return next(
         res
           .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Ошибка по умолчанию" })
+          .send({ message: "На сервере произошла ошибка" })
       );
     }
     return next(err);
@@ -131,7 +131,7 @@ module.exports.patchUsersAvatar = async (req, res, next) => {
       );
     }
     return next(
-      res.status(INTERNAL_SERVER_ERROR).send({ message: "Ошибка по умолчанию" })
+      res.status(INTERNAL_SERVER_ERROR).send({ message: "На сервере произошла ошибка" })
     );
   }
 };
