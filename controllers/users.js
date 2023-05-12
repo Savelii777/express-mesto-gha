@@ -15,9 +15,11 @@ module.exports.getUsers = async (req, res, next) => {
         res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }),
       );
     } else {
-      return  next(err);
+      return next(err);
     }
   }
+  // Default return statement
+  return next(new Error('Unexpected error occurred'));
 };
 
 module.exports.postUsers = async (req, res, next) => {
@@ -33,68 +35,68 @@ module.exports.postUsers = async (req, res, next) => {
   } catch (err) {
     if (err.name === 'ValidationError') {
       return next(
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' })
-      );
-    } else if (err.name === 'InternalServerError') {
-      return next(
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' })
-      );
-    } else {
-      return next(err);
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' }),
+        );
+      } else if (err.name === 'InternalServerError') {
+        return next(
+          res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }),
+        );
+      } else {
+        return next(err);
+      }
     }
-  }
-};
+    return; // default return statement
+  };
 
-module.exports.findUsersById = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res
-        .status(NOT_FOUND)
-        .send({ message: 'Передан несуществующий в БД id' });
-    }
-    return res.send({ data: user });
-  } catch (err) {
-    if (err.name === 'CastError') {
-      return next(
-        res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }),
-      );
-    } else {
+  module.exports.findUsersById = async (req, res, next) => {
+    try {
+      const user = await User.findById(req.params.id);
+      if (!user) {
+        return res
+          .status(NOT_FOUND)
+          .send({ message: 'Передан несуществующий в БД id' });
+      }
+      return res.send({ data: user });
+    } catch (err) {
+      if (err.name === 'CastError') {
+        return next(
+          res.status(BAD_REQUEST).send({ message: 'Передан некорректный id' }),
+        );
+      }
       return next(err);
     }
-  }
-};
+  };
 
-module.exports.updateUser = async (req, res, next) => {
-  try {
-    const { name, about } = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.user._id,
-      { name, about },
-      { new: true, runValidators: true }
-    );
-    if (!user) {
-      return res
-        .status(NOT_FOUND)
-        .send({ message: 'Пользователь по указанному _id не найден' });
-    }
-    return res.send({ data: user });
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      return next(
-        res.status(BAD_REQUEST).send({
-          message: 'Переданы некорректные данные при создании пользователя',
-        })
+  module.exports.updateUser = async (req, res, next) => {
+    try {
+      const { name, about } = req.body;
+      const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { name, about },
+        { new: true, runValidators: true },
       );
-    } else if (err.name === 'InternalServerError') {
-      return next(
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' })
-      );
-    } else {
-      return next(err);
-    }
-  }
-};
+      if (!user) {
+        return res
+          .status(NOT_FOUND)
+          .send({ message: 'Пользователь по указанному _id не найден' });
+      }
+      return res.send({ data: user });
+    } catch (err) {
+      if (err.name === 'ValidationError') {
+        return next(
+          res.status(BAD_REQUEST).send({
+            message: 'Переданы некорректные данные при создании пользователя',
+          }),
+        );
+      }
+      if (err.name === 'InternalServerError') {
+        return next(
+          res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }),
+          );
+        }
+        return next(err);
+      }
+    };
 
 module.exports.patchUsersAvatar = async (req, res, next) => {
   try {

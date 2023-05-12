@@ -98,7 +98,7 @@ module.exports.deleteLikes = async (req, res, next) => {
         return next(
           res.status(BAD_REQUEST).send({
             message: 'Переданы некорректные данные для постановки лайка.',
-          })
+          }),
         );
       case 'InternalServerError':
         return next(res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
