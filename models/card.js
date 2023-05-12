@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlength: [2, 'Минимум 2 символа.'],
-    maxlength: [30, 'Максимум может быть 30 символов.'],
+    minlength: [2, "Минимум 2 символа."],
+    maxlength: [30, "Максимум может быть 30 символов."],
   },
   link: {
     type: String,
@@ -13,7 +13,7 @@ const cardSchema = new mongoose.Schema({
   },
   owner: {
     required: true,
-    ref: 'user',
+    ref: "user",
     type: mongoose.Schema.Types.ObjectId,
   },
   likes: [
@@ -28,4 +28,4 @@ const cardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('card', cardSchema);
+module.exports = mongoose.model("card", cardSchema);
