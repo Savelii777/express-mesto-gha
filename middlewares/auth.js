@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const key = 'LCJhVJiI6IkpxdWF2IiwiaWF0IjoxNjA3MDYzMzc3fQeyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiI2NDA1ZWI5ZDAyNGRmMTI3ZThhNGFkZTQiLCJuYW1lIjoiSndhdXYiLCJpYXQiOjE2MDcwNjMzNzd9.P16E6tV4Ra4jBlS2igTPOWhsKsneAl_3jC3NoMeVb8g'
+const key = 'faWQiOiI2NDA1ZWI5ZDAyNGRmMTI3ZThhNGFkZTQi'
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer '))
