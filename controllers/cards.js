@@ -2,7 +2,7 @@ const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const InternalServerError = require('../errors/InternalServerError');
 const NotFoundError = require('../errors/NotFoundError');
-const OwnerError = require('../errors/OwnerError');
+const RemissionError = require('../errors/PermissionError');
 
 // GET /cards — возвращает все карточки
 module.exports.getCards = (req, res, next) => {
@@ -49,7 +49,7 @@ module.exports.deleteCards = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена.');
       } if (card.owner.valueOf() !== owner) {
-        throw new OwnerError('Карточка с указанным _id не найдена.');
+        throw new PermissionError('Карточка с указанным _id не найдена.');
       }
       return card.remove()
         .then(() => res.send({ data: card }));
