@@ -4,6 +4,7 @@ const InternalServerError = require('../errors/InternalServerError');
 const NotFoundError = require('../errors/NotFoundError');
 const OwnerError = require('../errors/OwnerError');
 
+// GET /cards — возвращает все карточки
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
@@ -16,13 +17,14 @@ module.exports.getCards = (req, res, next) => {
     //
     .catch((err) => {
       if (err.name === 'InternalServerError') {
-        throw new InternalServerError('Ошибка по умолчанию');
+        next(new InternalServerError('На сервере произошла ошибка'));
       } else {
         next(err);
       }
     });
 };
 
+//  POST /cards — создаёт карточку
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
@@ -30,15 +32,16 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании карточки');
+        next(new BadRequestError('Переданы некорректные данные при создании карточки'));
       } else if (err.name === 'InternalServerError') {
-        throw new InternalServerError('Ошибка по умолчанию');
+        next(new InternalServerError('На сервере произошла ошибка'));
       } else {
         next(err);
       }
     });
 };
 
+//  DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCards = (req, res, next) => {
   const owner = req.user._id;
   Card.findById(req.params.cardId)
@@ -53,13 +56,14 @@ module.exports.deleteCards = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new NotFoundError('Передан некорректный id');
+        next(new NotFoundError('Передан некорректный id'));
       } else {
         next(err);
       }
     });
 };
 
+// PUT /cards/:cardId/likes — поставить лайк карточке
 module.exports.putLikes = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -74,15 +78,16 @@ module.exports.putLikes = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные для постановки лайка.');
+        next(new BadRequestError('Переданы некорректные данные для постановки лайка.'));
       } else if (err.name === 'InternalServerError') {
-        throw new InternalServerError('Ошибка по умолчанию');
+        next(new InternalServerError('На сервере произошла ошибка'));
       } else {
         next(err);
       }
     });
 };
 
+// DELETE /cards/:cardId/likes — убрать лайк с карточки
 module.exports.deleteLikes = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -97,9 +102,9 @@ module.exports.deleteLikes = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные для постановки лайка.');
+        next(new BadRequestError('Переданы некорректные данные для постановки лайка.'));
       } else if (err.name === 'InternalServerError') {
-        throw new InternalServerError('Ошибка по умолчанию');
+        next(new InternalServerError('На сервере произошла ошибка'));
       } else {
         next(err);
       }
