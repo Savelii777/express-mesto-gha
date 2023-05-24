@@ -4,7 +4,6 @@ const InternalServerError = require('../errors/InternalServerError');
 const NotFoundError = require('../errors/NotFoundError');
 const OwnerError = require('../errors/OwnerError');
 
-// GET /cards — возвращает все карточки
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
@@ -14,7 +13,6 @@ module.exports.getCards = (req, res, next) => {
       }
       return res.send(cards);
     })
-    //
     .catch((err) => {
       if (err.name === 'InternalServerError') {
         next(new InternalServerError('На сервере произошла ошибка'));
@@ -23,8 +21,6 @@ module.exports.getCards = (req, res, next) => {
       }
     });
 };
-
-//  POST /cards — создаёт карточку
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
@@ -40,8 +36,6 @@ module.exports.createCard = (req, res, next) => {
       }
     });
 };
-
-//  DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCards = (req, res, next) => {
   const owner = req.user._id;
   Card.findById(req.params.cardId)
@@ -62,8 +56,6 @@ module.exports.deleteCards = (req, res, next) => {
       }
     });
 };
-
-// PUT /cards/:cardId/likes — поставить лайк карточке
 module.exports.putLikes = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -86,8 +78,6 @@ module.exports.putLikes = (req, res, next) => {
       }
     });
 };
-
-// DELETE /cards/:cardId/likes — убрать лайк с карточки
 module.exports.deleteLikes = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
