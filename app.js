@@ -8,7 +8,6 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const cardsRoutes = require('./routes/cards');
 const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('./errors/errors_constants');
-
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -48,18 +47,11 @@ app.use('/', auth, cardsRoutes);
 
 app.use(errors());
 
-app.use(
-  (req, res) => {
-    res.status(NOT_FOUND).send({ message: 'Неправильный путь' });
-  },
-);
+app.use('*', (req, res) => res.status(NOT_FOUND).send({ message: 'Неправильный путь' }));
 
 app.use((err, req, res, next) => {
-  if (err.statusCode) {
-    res.status(err.statusCode).send({ message: err.message });
-  } else {
-    res.status(INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
-  }
+  const { statusCode = INTERNAL_SERVER_ERROR } = err;
+  res.status(statusCode).send({ message: err.message });
   next();
 });
 
