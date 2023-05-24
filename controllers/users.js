@@ -7,7 +7,6 @@ const DuplicateError = require('../errors/DuplicateError');
 const InternalServerError = require('../errors/InternalServerError');
 const NotFoundError = require('../errors/NotFoundError');
 
-// post/signup
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
@@ -42,7 +41,6 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-// post/signin
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
@@ -58,13 +56,10 @@ module.exports.login = (req, res) => {
     });
 };
 
-//  get users/me
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь по указанному _id не найден');
-      }
+      if (!user) throw new NotFoundError('Пользователь по указанному _id не найден');
       return res.send({ data: user });
     })
     .catch((err) => {
