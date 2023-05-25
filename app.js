@@ -7,7 +7,9 @@ const usersRoutes = require('./routes/users');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const cardsRoutes = require('./routes/cards');
-const { INTERNAL_SERVER_ERROR, NOT_FOUND } = require('./errors/errors_constants');
+const { INTERNAL_SERVER_ERROR } = require('./errors/errors_constants');
+const NotFoundError = require('./errors/NotFoundError');
+
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -47,11 +49,19 @@ app.use('/', auth, cardsRoutes);
 
 app.use(errors());
 
-app.use('*', (req, res) => res.status(NOT_FOUND).send({ message: 'Неправильный путь' }));
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Неправильный путь'));
+});
 
 app.use((err, req, res, next) => {
   const { statusCode = INTERNAL_SERVER_ERROR } = err;
-  res.status(statusCode).send({ message: err.message });
+  res
+    .status(statusCode)
+    .send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : err.message,
+    });
   next();
 });
 

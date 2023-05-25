@@ -4,8 +4,8 @@ const User = require('../models/user');
 
 const BadRequestError = require('../errors/BadRequestError');
 const DuplicateError = require('../errors/DuplicateError');
-const InternalServerError = require('../errors/InternalServerError');
 const NotFoundError = require('../errors/NotFoundError');
+const AuthorizedError = require('../errors/AuthorizedError');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -25,7 +25,7 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.send({
+    .then((user) => res.status(201).send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
@@ -41,18 +41,22 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9ieyJ', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9ieyJ', {
+        expiresIn: '7d',
+      });
       res.status(200).send({ _id: token, message: 'Пользователь зарегестрирован' });
     })
     .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
+      if (err.name === 'AuthorizedError') {
+        next(new AuthorizedError('Необходима авторизация'));
+      } else {
+        next(err);
+      }
     });
 };
 
