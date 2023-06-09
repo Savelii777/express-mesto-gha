@@ -2,6 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 const express = require('express');
 
 const router = express.Router();
+
 const {
   getUsers,
   findUsersById,
@@ -10,24 +11,40 @@ const {
   getUser,
 } = require('../controllers/users');
 
-router
-  .get('/users', getUsers)
-  .get('/users/me', getUser)
-  .get('/users/:id', celebrate({
+const { URL_CHECK } = require('../utils/constants');
+
+router.get('/users', getUsers);
+router.get('/users/me', getUser);
+
+router.get(
+  '/users/:id',
+  celebrate({
     params: Joi.object().keys({
       id: Joi.string().length(24).hex(),
     }),
-  }), findUsersById)
-  .patch('/users/me', celebrate({
+  }),
+  findUsersById,
+);
+
+router.patch(
+  '/users/me',
+  celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
       about: Joi.string().min(2).max(30).required(),
     }),
-  }), updateUser)
-  .patch('/users/me/avatar', celebrate({
+  }),
+  updateUser,
+);
+
+router.patch(
+  '/users/me/avatar',
+  celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().required().regex(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/),
+      avatar: Joi.string().required().regex(URL_CHECK),
     }),
-  }), patchUsersAvatar);
+  }),
+  patchUsersAvatar,
+);
 
 module.exports = router;
