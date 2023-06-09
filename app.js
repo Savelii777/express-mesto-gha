@@ -17,7 +17,7 @@ mongoose.set('strictQuery', true);
 mongoose
   .connect('mongodb://0.0.0.0:27017/mestodb')
   .then(() => {
-    console.log('Database connected.');
+    console.log('Database connected!');
   })
   .catch((err) => {
     console.error(err);
