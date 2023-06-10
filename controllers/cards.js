@@ -76,7 +76,7 @@ module.exports.deleteLikes = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные для постановки лайка.'));
+        next(new BadRequestError('Переданы некорректные данные для удаления лайка.'));
       } else {
         next(err);
       }
