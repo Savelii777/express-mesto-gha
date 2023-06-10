@@ -8,7 +8,6 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-// post/signup
 module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   bcrypt
@@ -42,7 +41,6 @@ module.exports.createUser = (req, res, next) => {
     });
 };
 
-// post/signin
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -60,7 +58,6 @@ module.exports.login = (req, res, next) => {
     });
 };
 
-//  get users/me
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -74,14 +71,12 @@ module.exports.getUser = (req, res, next) => {
     });
 };
 
-// GET /users — возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
     .catch((err) => next(err));
 };
 
-// GET /users/:userId - возвращает пользователя по _id
 module.exports.findUsersById = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
@@ -99,7 +94,6 @@ module.exports.findUsersById = (req, res, next) => {
     });
 };
 
-// PATCH /users/me — обновляет профиль
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
@@ -118,7 +112,6 @@ module.exports.updateUser = (req, res, next) => {
     });
 };
 
-// PATCH /users/me/avatar — обновляет аватар
 module.exports.patchUsersAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })

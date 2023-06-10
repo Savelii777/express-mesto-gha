@@ -17,7 +17,7 @@ mongoose.set('strictQuery', true);
 mongoose
   .connect('mongodb://0.0.0.0:27017/mestodb')
   .then(() => {
-    console.log('Database connected!');
+    console.log('Database connected.');
   })
   .catch((err) => {
     console.error(err);
@@ -27,12 +27,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
+
 app.get('/crash-test', () => {
-  // краш-тест
   setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
+    throw new Error('Сервер сейчас упадёт!');
   }, 0);
 });
+
 app.use(router);
 app.use(errorLogger);
 app.use(errors());

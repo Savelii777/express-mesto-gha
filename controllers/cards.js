@@ -3,14 +3,12 @@ const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
 const OwnerError = require('../errors/OwnerError');
 
-// GET /cards — возвращает все карточки
 module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch((err) => next(err));
 };
 
-//  POST /cards — создаёт карточку
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
@@ -25,7 +23,6 @@ module.exports.createCard = (req, res, next) => {
     });
 };
 
-//  DELETE /cards/:cardId — удаляет карточку по идентификатору
 module.exports.deleteCards = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
@@ -52,7 +49,6 @@ module.exports.deleteCards = (req, res, next) => {
     });
 };
 
-// PUT /cards/:cardId/likes — поставить лайк карточке
 module.exports.putLikes = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .orFail(() => {
@@ -70,7 +66,6 @@ module.exports.putLikes = (req, res, next) => {
     });
 };
 
-// DELETE /cards/:cardId/likes — убрать лайк с карточки
 module.exports.deleteLikes = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .orFail(() => {
